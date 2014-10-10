@@ -76,7 +76,7 @@ public class Main {
                 for (int point2 = point1 + 1; point2 < numPoints; point2++) {
                     Point p2 = new Point(xFromPoint(point2), yFromPoint(point2));
                     System.out.println("triangle: " + i + " p1: " + p1 + " p2: " + p2);
-                    System.out.println(point1/numPoints + point2/numPoints/numPoints+ "%");
+                    System.out.println((1.0*point1/numPoints + point2/numPoints/numPoints)*100+ "%");
                     for (int point3 = point2 + 1; point3 < numPoints; point3++) {
                         Point p3 = new Point(xFromPoint(point3), yFromPoint(point3));
 
