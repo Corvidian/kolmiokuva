@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -46,7 +45,8 @@ public class Main {
         double bestDist = p.distance(pic);
 
         for (int i = 0; i < maxTriangles; i++) {
-
+            doneQueue = new LinkedBlockingQueue<>();
+            
             int workUnits = 0;
 
             for (int point1 = 0; point1 < conf.numPoints; point1++) {
@@ -61,11 +61,12 @@ public class Main {
                 if (!doneQueue.isEmpty()) {
                     CalcState bestState = Collections.min(doneQueue);
 
-                    System.out.println(now() + bestState.bestTriangle + " " + bestState.bestDist);
+                    System.out.println(now() + bestState.bestTriangle + " " + Arrays.toString(bestState.bestTriangle.rgba) +  " " + bestState.bestDist);
                 }
                 System.out.println(now() + "Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits
-                        + " (" + (1.0 * doneQueue.size() / workUnits) * 100 + "%)"
-                        + " (" + (1.0 * doneQueue.size() / workUnits) / maxTriangles * 100 + "%)");
+                        + String.format(" (%.4f%%) (%.4f%%)", 
+                                (1.0 * doneQueue.size() / workUnits) * 100,
+                                (1.0 * doneQueue.size() / workUnits) / maxTriangles * 100));
 
                 Thread.sleep(60000);
             }
@@ -74,8 +75,8 @@ public class Main {
             bestDist = bestState.bestDist;
             Triangle bestTriangle = bestState.bestTriangle;
 
-            System.out.println(bestTriangle + Arrays.toString(bestTriangle.rgba));
-            System.out.println(triangles.size() + " " + bestDist);
+//            System.out.println(bestTriangle + Arrays.toString(bestTriangle.rgba));
+//            System.out.println(triangles.size() + " " + bestDist);
 
             p.addTriangle(bestTriangle);
             triangles.add(bestTriangle);

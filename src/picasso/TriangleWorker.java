@@ -32,7 +32,7 @@ public class TriangleWorker extends Thread {
                 Main.doneQueue.put(returnState);
             }
         } catch (InterruptedException ex) {
-            Logger.getLogger(TriangleWorker.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TriangleWorker.class.getName()).log(Level.SEVERE, Integer.toString(workerNumber), ex);
         }
     }
 
