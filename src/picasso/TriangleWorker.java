@@ -28,7 +28,6 @@ public class TriangleWorker extends Thread {
         try {
             while (true) {
                 CalcState state = Main.workQueue.take();
-                System.out.println("Worker: " + workerNumber + " starting point " + state.p1 + " of triangle " + state.triangleNumber);
                 CalcState returnState = work(state);
                 Main.doneQueue.put(returnState);
             }
@@ -43,22 +42,21 @@ public class TriangleWorker extends Thread {
 
         for (int point2 = state.point1 + 1; point2 < conf.numPoints; point2++) {
             Point p2 = new Point(Main.xFromPoint(point2), Main.yFromPoint(point2));
-//            System.out.println("triangle: " + state.triangleNumber + " p1: " + state.p1 + " p2: " + p2);
-//            System.out.println((1.0 * state.point1 / conf.numPoints + point2 / conf.numPoints / conf.numPoints) * 100 + "%");
+
+            StringBuilder s = new StringBuilder();
+            s.append(Main.now());
+            s.append(String.format("Worker %d ", workerNumber));
+            s.append(String.format("starting point (%9s,%9s) ", state.p1, p2));
+            s.append(String.format("of triangle %d", state.triangleNumber));
+            System.out.println(s);
+
             for (int point3 = point2 + 1; point3 < conf.numPoints; point3++) {
                 Point p3 = new Point(Main.xFromPoint(point3), Main.yFromPoint(point3));
 
-                //System.out.println(bestTriangle);
-//                        if (bestTriangle != null) {
-//                            System.out.println(Arrays.toString(bestTriangle.rgba));
-//                        }
-                //System.out.println(bestDist);
                 CalcState tempState = testPoints(state, p2, p3);
 
                 if (tempState.bestDist < bestState.bestDist) {
                     bestState = tempState;
-//                    System.out.println("triangle " + bestState.triangleNumber + "\t" + bestState.bestTriangle + "\t" + Arrays.toString(bestState.bestTriangle.rgba) + "\t" + bestState.bestDist);
-
                 }
 
             }

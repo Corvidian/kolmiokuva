@@ -1,7 +1,9 @@
 package picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -57,16 +59,18 @@ public class Main {
 
             while (doneQueue.size() < workUnits) {
                 if (!doneQueue.isEmpty()) {
-                    CalcState bestState = Collections.max(doneQueue);
+                    CalcState bestState = Collections.min(doneQueue);
 
-                    System.out.println("[" + new Date() + "] " + bestState.bestTriangle + " " + bestState.bestDist);
+                    System.out.println(now() + bestState.bestTriangle + " " + bestState.bestDist);
                 }
-                System.out.println("Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits + " (" + (1.0 * doneQueue.size() / workUnits) * 100 + "%)");
+                System.out.println(now() + "Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits
+                        + " (" + (1.0 * doneQueue.size() / workUnits) * 100 + "%)"
+                        + " (" + (1.0 * doneQueue.size() / workUnits) / maxTriangles * 100 + "%)");
 
                 Thread.sleep(60000);
             }
 
-            CalcState bestState = Collections.max(doneQueue);
+            CalcState bestState = Collections.min(doneQueue);
             bestDist = bestState.bestDist;
             Triangle bestTriangle = bestState.bestTriangle;
 
@@ -98,5 +102,10 @@ public class Main {
             y = y - 1;
         }
         return y;
+    }
+    
+    static String now() {
+        String timeStamp = new SimpleDateFormat("[yyyyMMdd-HHmmss] ").format(Calendar.getInstance().getTime());
+        return timeStamp;
     }
 }
