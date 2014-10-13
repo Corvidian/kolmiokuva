@@ -260,15 +260,15 @@ public class Picture {
         return distance;
     }
 
-    public final double distance(Picture anotherPicture, int xmin, int xmax, int ymin, int ymax) throws IllegalArgumentException {
+    public final double distance(Picture anotherPicture, Square s) throws IllegalArgumentException {
         if (this.width != anotherPicture.getWidth() || this.height != anotherPicture.getHeight()) {
             throw new IllegalArgumentException("Invalid image size. Sizes must match when comparing.");
         }
 
         double distance = 0.0;
 
-        for (int x = xmin; x <= xmax; x++) {
-            for (int y = ymin; y < ymax; y++) {
+        for (int x = s.xmin; x <= s.xmax+1; x++) {
+            for (int y = s.ymin; y < s.ymax+1; y++) {
                 double tmp = 0;
                 double val;
 

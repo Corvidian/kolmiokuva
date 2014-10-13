@@ -83,11 +83,32 @@ public class TriangleWorker extends Thread {
                         Triangle t = new Triangle(rgba, state.p1, p2, p3);
 
                         Picture tmpPic = new Picture(state.p.getData(), state.p.getWidth(), state.p.getHeight());
+
+                        Square dirty = dirty(state.p1, p2, p3);
+                        double dirtyDistanceBefore = tmpPic.distance(conf.pic, dirty);
+                        double distanceBefore = tmpPic.distance(conf.pic);
+
                         tmpPic.addTriangle(t);
-                        double distance = tmpPic.distance(conf.pic);
-                        if (distance < bestDist) {
-                            bestTriangle = new Triangle(rgba.clone(), state.p1, p2, p3);
-                            bestDist = distance;
+                        double dirtyDistanceAfter = tmpPic.distance(conf.pic, dirty);
+
+                        if (dirtyDistanceAfter < dirtyDistanceBefore) {
+                            double distance = tmpPic.distance(conf.pic);
+                            if (distance < bestDist) {
+                                bestTriangle = new Triangle(rgba.clone(), state.p1, p2, p3);
+//                                System.out.printf("%.2f = %.2f - %.2f",
+//                                        dirtyDistanceBefore - dirtyDistanceAfter,
+//                                        dirtyDistanceBefore, dirtyDistanceAfter);
+//                                System.out.printf("%f = %.2f - %.2f -- %b\n", 
+//                                        (dirtyDistanceBefore - dirtyDistanceAfter) - (distanceBefore - distance),
+//                                        dirtyDistanceBefore - dirtyDistanceAfter, 
+//                                        distanceBefore - distance, 
+//                                        (dirtyDistanceBefore - dirtyDistanceAfter) == (distanceBefore - distance));
+                                
+                                if((dirtyDistanceBefore - dirtyDistanceAfter) - (distanceBefore - distance) > 1) {
+                                    System.out.println(state.p1+","+p2+","+p3);
+                                }
+                                bestDist = distance;
+                            }
                             //System.out.println(bestTriangle + " " + Arrays.toString(t.rgba));
                             //System.out.println(bestDist);
                         }
@@ -105,4 +126,14 @@ public class TriangleWorker extends Thread {
         }
         return ret;
     }
+
+    private Square dirty(Point p1, Point p2, Point p3) {
+        //ymin = p1.y
+        //ymax = p3.y
+        int xmax = Math.max(p1.x, Math.max(p2.x, p3.x));
+        int xmin = Math.min(p1.x, Math.min(p2.x, p3.x));
+
+        return new Square(xmin, xmax, p1.y, p3.y);
+    }
+
 }
