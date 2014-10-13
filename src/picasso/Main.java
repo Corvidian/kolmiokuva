@@ -63,7 +63,7 @@ public class Main {
                                 (1.0 * doneQueue.size() / workUnits) / conf.maxTriangles * 100,
                                 p.getCacheSize()));
 
-                Thread.sleep(6000);
+                Thread.sleep(60000);
             }
 
             System.out.println(now() + "Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits

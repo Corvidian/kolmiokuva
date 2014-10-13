@@ -51,6 +51,11 @@ public class TriangleWorker extends Thread {
 
             for (int point3 = point2 + 1; point3 < conf.numPoints; point3++) {
                 Point p3 = new Point(Main.xFromPoint(point3), Main.yFromPoint(point3));
+                
+                int det = (p2.y-p3.y) * (state.p1.x-p3.x) - (p3.x-p2.x) * (p3.y-state.p1.y);
+                if (det == 0) {
+                    continue;
+                }
 
                 CalcState tempState = testPoints(state, p2, p3);
 
