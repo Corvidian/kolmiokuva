@@ -3,23 +3,30 @@ package picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Picture {
 
     private int[] data;
     private final int width;
     private final int height;
+    
+    private ConcurrentHashMap<Square, Double> distCache;
 
     public Picture(int[] data, int width, int height) {
         this.data = Arrays.copyOf(data, data.length);
         this.width = width;
         this.height = height;
+        
+        flushCache();
     }
 
     public Picture(int width, int height) {
         this.width = width;
         this.height = height;
         init();
+        
+        flushCache();
     }
 
     public int[] getData() {
@@ -63,6 +70,8 @@ public class Picture {
     }
 
     public void paintTriangle(Triangle triangle) {
+        flushCache();
+        
         Edge[] edges = triangle.getEdges();
         List<Integer> lineEndPoints = new ArrayList();
         boolean onRightSide = gatherEndPoints(edges, lineEndPoints);
@@ -213,11 +222,11 @@ public class Picture {
         return i;
     }
 
-    public final void paintColor(final int x, final int y, final int[] rgba) {
+    private void paintColor(final int x, final int y, final int[] rgba) {
         paintColor(x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
     }
 
-    public final void paintColor(final int x, final int y, final int r, final int g, final int b, final int a) {
+    private void paintColor(final int x, final int y, final int r, final int g, final int b, final int a) {
         if (!insidePicture(x, y)) {
             return;
         }
@@ -264,11 +273,15 @@ public class Picture {
         if (this.width != anotherPicture.getWidth() || this.height != anotherPicture.getHeight()) {
             throw new IllegalArgumentException("Invalid image size. Sizes must match when comparing.");
         }
+        
+        if(distCache.containsKey(s)) {
+            return distCache.get(s);
+        }
 
         double distance = 0.0;
 
-        for (int x = s.xmin; x <= s.xmax+1; x++) {
-            for (int y = s.ymin; y < s.ymax+1; y++) {
+        for (int x = s.xmin; x <= s.xmax; x++) {
+            for (int y = s.ymin; y <= s.ymax; y++) {
                 double tmp = 0;
                 double val;
 
@@ -284,6 +297,8 @@ public class Picture {
                 distance += Math.sqrt(tmp);
             }
         }
+        
+        distCache.put(s, distance);
 
         return distance;
     }
@@ -399,5 +414,13 @@ public class Picture {
         }
 
         return rgba;
+    }
+    
+    private void flushCache() {
+        this.distCache = new ConcurrentHashMap<>();
+    }
+    
+    public int getCacheSize() {
+        return distCache.size();
     }
 }

@@ -6,6 +6,7 @@ package picasso;
  */
 public class CalcState implements Comparable<CalcState> {
     final Picture p;
+    final double pDist;
     final int triangleNumber;
     final int point1;
     final Point p1;
@@ -13,8 +14,9 @@ public class CalcState implements Comparable<CalcState> {
     final double bestDist;
     final Triangle bestTriangle;
 
-    public CalcState(Picture p, int triangleNumber, int point1, Point p1, double bestDist, Triangle bestTriangle) {
+    public CalcState(Picture p, double pDist, int triangleNumber, int point1, Point p1, double bestDist, Triangle bestTriangle) {
         this.p = p;
+        this.pDist = pDist;
         this.point1 = point1;
         this.bestDist = bestDist;
         this.triangleNumber = triangleNumber;

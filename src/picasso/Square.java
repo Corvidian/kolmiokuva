@@ -18,4 +18,38 @@ public class Square {
         this.ymax = ymax;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + this.xmin;
+        hash = 47 * hash + this.xmax;
+        hash = 47 * hash + this.ymin;
+        hash = 47 * hash + this.ymax;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Square other = (Square) obj;
+        if (this.xmin != other.xmin) {
+            return false;
+        }
+        if (this.xmax != other.xmax) {
+            return false;
+        }
+        if (this.ymin != other.ymin) {
+            return false;
+        }
+        if (this.ymax != other.ymax) {
+            return false;
+        }
+        return true;
+    }
+
 }

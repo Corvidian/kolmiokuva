@@ -22,6 +22,8 @@ public class Main {
         doneQueue = new LinkedBlockingQueue<>();
 
         int threads = Runtime.getRuntime().availableProcessors();
+
+//        threads=1;
         List<TriangleWorker> workers = new ArrayList<>(threads);
         for (int i = 0; i < threads; i++) {
             workers.add(new TriangleWorker(i, conf));
@@ -33,17 +35,18 @@ public class Main {
         ArrayList<Triangle> triangles = new ArrayList<>();
 
         Picture p = new Picture(conf.pic.getWidth(), conf.pic.getHeight());
-        double bestDist = p.distance(conf.pic);
+        double pDist = p.distance(conf.pic);
+        double bestDist = pDist;
 
         for (int i = 0; i < conf.maxTriangles; i++) {
             doneQueue = new LinkedBlockingQueue<>();
-            
+
             int workUnits = 0;
 
             for (int point1 = 0; point1 < conf.numPoints; point1++) {
                 Point p1 = new Point(xFromPoint(point1), yFromPoint(point1));
 
-                CalcState state = new CalcState(p, i, point1, p1, bestDist, null);
+                CalcState state = new CalcState(p, pDist, i, point1, p1, bestDist, null);
                 workQueue.add(state);
                 workUnits++;
             }
@@ -52,25 +55,32 @@ public class Main {
                 if (!doneQueue.isEmpty()) {
                     CalcState bestState = Collections.min(doneQueue);
 
-                    System.out.println(now() + bestState.bestTriangle + " " + Arrays.toString(bestState.bestTriangle.rgba) +  " " + bestState.bestDist);
+                    System.out.println(now() + bestState.bestTriangle + " " + Arrays.toString(bestState.bestTriangle.rgba) + " " + bestState.bestDist);
                 }
                 System.out.println(now() + "Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits
-                        + String.format(" (%.4f%%) (%.4f%%)", 
+                        + String.format(" (%.4f%%) (%.4f%%) cache size: %d",
                                 (1.0 * doneQueue.size() / workUnits) * 100,
-                                (1.0 * doneQueue.size() / workUnits) / conf.maxTriangles * 100));
+                                (1.0 * doneQueue.size() / workUnits) / conf.maxTriangles * 100,
+                                p.getCacheSize()));
 
-                Thread.sleep(60000);
+                Thread.sleep(6000);
             }
 
-            CalcState bestState = Collections.min(doneQueue);
-            bestDist = bestState.bestDist;
-            Triangle bestTriangle = bestState.bestTriangle;
+            System.out.println(now() + "Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits
+                    + String.format(" (%.4f%%) (%.4f%%) cache size: %d",
+                            (1.0 * doneQueue.size() / workUnits) * 100,
+                            (1.0 * doneQueue.size() / workUnits) / conf.maxTriangles * 100,
+                            p.getCacheSize()));
 
-            System.out.println(now() + bestTriangle + Arrays.toString(bestTriangle.rgba));
-            System.out.println(now() + triangles.size() + " " + bestDist);
+            CalcState bestState = Collections.min(doneQueue);
+            Triangle bestTriangle = bestState.bestTriangle;
 
             p.addTriangle(bestTriangle);
             triangles.add(bestTriangle);
+
+            pDist = p.distance(conf.pic);
+            bestDist = pDist;
+
             Rasterizer.writeTga(p, triangles.size());
             TriangleWriter.writeTriangles("le_triangles", p.getWidth(), p.getHeight(), triangles);
         }
@@ -95,7 +105,7 @@ public class Main {
         }
         return y;
     }
-    
+
     static String now() {
         String timeStamp = new SimpleDateFormat("[yyyyMMdd-HHmmss] ").format(Calendar.getInstance().getTime());
         return timeStamp;

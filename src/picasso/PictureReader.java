@@ -43,6 +43,7 @@ public class PictureReader {
     public static Picture readPictureFromTriangles(String path) throws Exception {
         List<Triangle> triangles = new ArrayList<Triangle>();
         File file = new File(path);
+        System.out.println(file.getAbsolutePath());
         // File file = new File("/home/arto/Popup-course/triangulation/testi.tr");
         Scanner reader = new Scanner(file);
 
