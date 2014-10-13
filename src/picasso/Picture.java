@@ -85,7 +85,6 @@ public class Picture {
             remPoint = edges[0].p2;
         }
 
-
         Point longestPt = new Point(edges[2].p2.x - edges[2].p1.x, edges[2].p2.y - edges[2].p1.y);
         Point remPt = new Point(remPoint.x - edges[2].p1.x, remPoint.y - edges[2].p1.y);
         boolean onRightSide = (longestPt.x * remPt.y - longestPt.y * remPt.x) < 0;
@@ -101,7 +100,6 @@ public class Picture {
         int y1 = edges[2].p1.y;
         int x2 = edges[2].p2.x;
         int y2 = edges[2].p2.y;
-
 
         // The idea is to fill vector endPoints to tell which is the farthest
         // point to color at the same y-coordinate, when handling the last two
@@ -243,6 +241,34 @@ public class Picture {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
+                double tmp = 0;
+                double val;
+
+                val = this.rAt(x, y) - anotherPicture.rAt(x, y);
+                tmp += val * val;
+
+                val = this.gAt(x, y) - anotherPicture.gAt(x, y);
+                tmp += val * val;
+
+                val = this.bAt(x, y) - anotherPicture.bAt(x, y);
+                tmp += val * val;
+
+                distance += Math.sqrt(tmp);
+            }
+        }
+
+        return distance;
+    }
+
+    public final double distance(Picture anotherPicture, int xmin, int xmax, int ymin, int ymax) throws IllegalArgumentException {
+        if (this.width != anotherPicture.getWidth() || this.height != anotherPicture.getHeight()) {
+            throw new IllegalArgumentException("Invalid image size. Sizes must match when comparing.");
+        }
+
+        double distance = 0.0;
+
+        for (int x = xmin; x <= xmax; x++) {
+            for (int y = ymin; y < ymax; y++) {
                 double tmp = 0;
                 double val;
 

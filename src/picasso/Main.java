@@ -16,16 +16,7 @@ public class Main {
     static Configuration conf;
 
     public static void main(String[] args) throws Exception {
-
-        Picture pic = PictureReader.readPictureFromTga(args[0]);
-        int maxTriangles = Integer.parseInt(args[1]);
-
-        int xSteps = 8;
-        int ySteps = 8;
-        int colorSteps = 4;
-        int alphaSteps = 4;
-
-        conf = new Configuration(pic, xSteps, ySteps, colorSteps, alphaSteps);
+        conf = Configuration.fromFile(args[0]);
 
         workQueue = new LinkedBlockingQueue<>();
         doneQueue = new LinkedBlockingQueue<>();
@@ -41,10 +32,10 @@ public class Main {
 
         ArrayList<Triangle> triangles = new ArrayList<>();
 
-        Picture p = new Picture(pic.getWidth(), pic.getHeight());
-        double bestDist = p.distance(pic);
+        Picture p = new Picture(conf.pic.getWidth(), conf.pic.getHeight());
+        double bestDist = p.distance(conf.pic);
 
-        for (int i = 0; i < maxTriangles; i++) {
+        for (int i = 0; i < conf.maxTriangles; i++) {
             doneQueue = new LinkedBlockingQueue<>();
             
             int workUnits = 0;
@@ -66,7 +57,7 @@ public class Main {
                 System.out.println(now() + "Triangle: " + i + " done: " + doneQueue.size() + "/" + workUnits
                         + String.format(" (%.4f%%) (%.4f%%)", 
                                 (1.0 * doneQueue.size() / workUnits) * 100,
-                                (1.0 * doneQueue.size() / workUnits) / maxTriangles * 100));
+                                (1.0 * doneQueue.size() / workUnits) / conf.maxTriangles * 100));
 
                 Thread.sleep(60000);
             }
@@ -75,8 +66,8 @@ public class Main {
             bestDist = bestState.bestDist;
             Triangle bestTriangle = bestState.bestTriangle;
 
-//            System.out.println(bestTriangle + Arrays.toString(bestTriangle.rgba));
-//            System.out.println(triangles.size() + " " + bestDist);
+            System.out.println(now() + bestTriangle + Arrays.toString(bestTriangle.rgba));
+            System.out.println(now() + triangles.size() + " " + bestDist);
 
             p.addTriangle(bestTriangle);
             triangles.add(bestTriangle);

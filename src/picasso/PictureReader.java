@@ -12,7 +12,8 @@ public class PictureReader {
     public static Picture readPictureFromTga(String path) throws Exception {
         File f = new File(path);
         if (!f.exists()) {
-            throw new IllegalArgumentException("File at " + path + " does not exist.");
+            throw new IllegalArgumentException("File at " + path + " does not exist. " + f.getAbsolutePath());
+            
         }
 
         FileInputStream in = new FileInputStream(f);
