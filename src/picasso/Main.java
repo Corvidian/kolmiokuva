@@ -17,13 +17,19 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         conf = Configuration.fromFile(args[0]);
+        
+        int threads;
+        
+        if(args.length > 1 && args[1] != null) {
+            threads = Integer.parseInt(args[1]);
+        }
+        else {
+            threads = Runtime.getRuntime().availableProcessors();
+        }
 
         workQueue = new LinkedBlockingQueue<>();
         doneQueue = new LinkedBlockingQueue<>();
 
-        int threads = Runtime.getRuntime().availableProcessors();
-
-//        threads=1;
         List<TriangleWorker> workers = new ArrayList<>(threads);
         for (int i = 0; i < threads; i++) {
             workers.add(new TriangleWorker(i, conf));

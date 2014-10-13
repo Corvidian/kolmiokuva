@@ -97,13 +97,9 @@ public class TriangleWorker extends Thread {
 
                         double distance = state.pDist - (dirtyDistanceBefore - dirtyDistanceAfter);
                         
-//                        double distanceAfter = tmpPic.distance(conf.pic);
-
                         if (distance < bestDist) {
                             bestTriangle = new Triangle(rgba.clone(), state.p1, p2, p3);
                             bestDist = distance;
-  //                          System.out.println(bestDist);
-  //                          System.out.printf("%.6f %.6f %.6f\n", state.pDist - distanceAfter, dirtyDistanceBefore - dirtyDistanceAfter, Math.abs((dirtyDistanceBefore - dirtyDistanceAfter) - (state.pDist - distanceAfter)));
                         }
                     }
                 }
