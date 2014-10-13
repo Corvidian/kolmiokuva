@@ -26,7 +26,7 @@ public class Main {
         else {
             threads = Runtime.getRuntime().availableProcessors();
         }
-
+       
         workQueue = new LinkedBlockingQueue<>();
         doneQueue = new LinkedBlockingQueue<>();
 
@@ -87,8 +87,8 @@ public class Main {
             pDist = p.distance(conf.pic);
             bestDist = pDist;
 
-            Rasterizer.writeTga(p, triangles.size());
-            TriangleWriter.writeTriangles("le_triangles", p.getWidth(), p.getHeight(), triangles);
+            Rasterizer.writeTga(p, conf.filenamePrefix + "_" + triangles.size());
+            TriangleWriter.writeTriangles(conf.filenamePrefix, p.getWidth(), p.getHeight(), triangles);
         }
 
         for (TriangleWorker tw : workers) {
